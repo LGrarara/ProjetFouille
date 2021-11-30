@@ -5,78 +5,79 @@
 #include <conio.h>
 #include <string.h>
 
-
 //definition structure pour le groupe
-typedef struct Cluster {
+typedef struct Cluster
+{
 	int medoid;
 	int taille;
-}Cluster;
-typedef Cluster* P_Cluster ;
+} Cluster;
+typedef Cluster *P_Cluster;
 
 //definition structure point
-typedef struct Point {
+typedef struct Point
+{
 	float Courage;
 	float Loyaute;
 	float Sagesse;
 	float Malice;
 	P_Cluster cluster;
-}Point;
-typedef Point* P_Point ;
+} Point;
+typedef Point *P_Point;
 
 //definition structure couleur
-typedef struct Color{
-    int r;
-    int g;
-    int b;
-}Color;
+typedef struct Color
+{
+	int r;
+	int g;
+	int b;
+} Color;
 
 //prototypes des fonctions
-int minimun(int,int);
-int maximum(int,int);
-float getDistance(Point,Point);
-void afficheCluster(Cluster);
-void initialisePoints(P_Point,int);
-void initialiseClusters(P_Point,P_Cluster,int,int);
-void initialiseDistance(float *distance[],P_Point,int);
-void affecterPointsMedoideProche(P_Point,P_Cluster, float *distance[], int, int);
-
-
-
-
-
-
+int minimun(int, int);
+int maximum(int, int);
+float getDistance(Point, Point);
+// void afficheCluster(Cluster);
+void initialisePoints(P_Point, int);
+// void initialiseClusters(P_Point, P_Cluster, int, int);
+// void initialiseDistance(float *distance[], P_Point, int);
+// void affecterPointsMedoideProche(P_Point, P_Cluster, float *distance[], int, int);
 
 //Definition des fonctions
 //retourne le min de 2 valeur
-int minimum(int i , int j){
-    int m=(i<j) ? i:j;
+int minimum(int i, int j)
+{
+	int m = (i < j) ? i : j;
 	return m;
 }
 
 //retourne le max de 2 valeur
-int maximum(int i , int j){
-    int m=(i>j) ? i:j;
+int maximum(int i, int j)
+{
+	int m = (i > j) ? i : j;
 	return m;
 }
 
 //fonction qui retourne distance entre 2points
 //Ici chaque point est representé dans le plan par 4 coordonnées (4D)
-float getDistance(Point a,Point b){
-    float s=sqrt(pow(a.Courage-b.Courage,2)+pow(a.Loyaute-b.Loyaute,2)+ pow(a.Sagesse-b.Sagesse,2)+
-                 pow(a.Malice-b.Malice,2));
+float getDistance(Point a, Point b)
+{
+	float s = sqrt(pow(a.Courage - b.Courage, 2) + pow(a.Loyaute - b.Loyaute, 2) + pow(a.Sagesse - b.Sagesse, 2) +
+				   pow(a.Malice - b.Malice, 2));
 	return s;
-
+}
 //fonction pour l'intialisation de n points
-void initialisePoints(P_Point points,int n){
+void initialisePoints(P_Point points, int n)
+{
 	int i;
 
-	char* file_path = "choixpeauMagique.csv";
-	FILE* fp = fopen(file_path, "r");
+	char *file_path = "choixpeauMagique.csv";
+	FILE *fp = fopen(file_path, "r");
 
 	if (!fp)
 		printf("Can't open file\n");
 
-	else {
+	else
+	{
 		//Ici on a pris un tableau de taille 1084
 		char buffer[1024];
 
@@ -84,7 +85,8 @@ void initialisePoints(P_Point points,int n){
 		int column = 0;
 
 		while (fgets(buffer,
-					1024, fp)) {
+					 1024, fp))
+		{
 			column = 0;
 			row++;
 
@@ -94,45 +96,47 @@ void initialisePoints(P_Point points,int n){
 				continue;
 
 			// Division des données
-			char* value = strtok(buffer, ";");
+			char *value = strtok(buffer, ";");
 
-			while (value) {
+			while (value)
+			{
 				// Column 1
-				if (column == 0) {
+				if (column == 0)
+				{
 					printf("Name :");
-
 				}
 
 				// Column 2
-				if (column == 1) {
+				if (column == 1)
+				{
 					printf("\tCourage :");
-					points[row-1].Courage = atof(value);
+					points[row - 1].Courage = atof(value);
 				}
-
 
 				// Column 3
-				if (column == 2) {
+				if (column == 2)
+				{
 					printf("\tLoyaute :");
-					points[row-1].Loyaute = atof(value);
+					points[row - 1].Loyaute = atof(value);
 				}
-
 
 				// Column 4
-				if (column == 3) {
+				if (column == 3)
+				{
 					printf("\tSagesse :");
-					points[row-1].Sagesse = atof(value);
+					points[row - 1].Sagesse = atof(value);
 				}
-
 
 				// Column 5
-				if (column == 4) {
+				if (column == 4)
+				{
 					printf("\tMalice :");
-					points[row-1].Malice = atof(value);
+					points[row - 1].Malice = atof(value);
 				}
 
-
 				// Column 6
-				if (column == 5) {
+				if (column == 5)
+				{
 					printf("\tVille :");
 				}
 
@@ -157,11 +161,9 @@ void initialisePoints(P_Point points,int n){
     } */
 }
 
-	int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    
-int n=50;//points
-initialisePoints();
 
-    return 0;
+	int n = 50; //points
+	return 0;
 }

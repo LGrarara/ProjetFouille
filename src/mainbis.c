@@ -13,6 +13,13 @@ typedef struct Point
 } Point;
 typedef Point P_Point;
 
+typedef struct Cluster
+{
+    int taille;
+    P_Point C_Cluster[];
+} Cluster;
+typedef Cluster P_Cluster;
+
 const char *getfield(char *line, int num)
 {
     const char *tok;
@@ -59,8 +66,26 @@ void parsenPoint(int initalnumber, P_Point init[], FILE *fp)
         init[i].Sagesse = atof(getfield(tmp, 4));
         init[i].Malice = atof(getfield(tmp, 5));
         // strcpy(init[i].maison, getfield(tmp, 6));
-        // NOTE strtok clobbers tmp
         free(tmp);
+        i++;
+    }
+}
+
+void numercluster(int K, int initialnumber, int tab[])
+{
+    for (int i = 0; i < K; i++)
+    {
+        tab[i] = rand() % initialnumber + 1;
+    }
+}
+
+void creecluster(int intab[], P_Cluster clustertab[], int initialnumber, P_Point init[], int K)
+{
+    for (int i = 0; i < K; i++)
+    {
+        clustertab[i].taille = 1;
+        P_Point C_Cluster[initialnumber];
+        C_Cluster[i] = init[intab[i]];
         i++;
     }
 }
@@ -78,6 +103,10 @@ int main()
     P_Point init[initialnumber];
     rewind(fp);
     parsenPoint(initialnumber, init, fp);
-    printf("%f", init[0].Courage);
+    int K = 4;
+    int intab[K];
+    numercluster(K, initialnumber, intab);
+    P_Cluster clustertab[K];
+    creecluster(intab, clustertab, initialnumber, init, K);
     fclose(fp);
 }

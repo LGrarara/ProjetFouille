@@ -3,13 +3,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 
 typedef struct Point
 {
+    // char nom[100];
     float Courage;
     float Loyaute;
     float Sagesse;
     float Malice;
+    // char maison[100];
 } Point;
 typedef Point P_Point;
 
@@ -19,6 +22,26 @@ typedef struct Cluster
     P_Point C_Cluster[];
 } Cluster;
 typedef Cluster P_Cluster;
+
+float getDistance(Point a, Point b)
+{
+    float s = sqrt(pow(a.Courage - b.Courage, 2) + pow(a.Loyaute - b.Loyaute, 2) + pow(a.Sagesse - b.Sagesse, 2) +
+                   pow(a.Malice - b.Malice, 2));
+    return s;
+}
+
+int minimum(int i, int j)
+{
+    int m = (i < j) ? i : j;
+    return m;
+}
+
+//retourne le max de 2 valeur
+int maximum(int i, int j)
+{
+    int m = (i > j) ? i : j;
+    return m;
+}
 
 const char *getfield(char *line, int num)
 {
@@ -89,8 +112,12 @@ void creecluster(int intab[], P_Cluster clustertab[], int initialnumber, P_Point
         i++;
     }
 }
-int main()
 
+void addnearestpointtocluster(P_Cluster clustertab[])
+{
+}
+
+int main()
 {
     FILE *fp = fopen("choixpeauMagique.csv", "r");
     if (fp == NULL)
@@ -108,5 +135,6 @@ int main()
     numercluster(K, initialnumber, intab);
     P_Cluster clustertab[K];
     creecluster(intab, clustertab, initialnumber, init, K);
+    printf("%f", clustertab[0].C_Cluster[0].Courage);
     fclose(fp);
 }

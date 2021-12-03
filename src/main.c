@@ -1,49 +1,35 @@
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <time.h>
-#include <conio.h>
 #include <string.h>
+#include <errno.h>
+#include <math.h>
 
-//definition structure pour le groupe
-typedef struct Cluster
-{
-	int medoid;
-	int taille;
-} Cluster;
-typedef Cluster *P_Cluster;
-
-//definition structure point
 typedef struct Point
 {
+	// char nom[100];
 	float Courage;
 	float Loyaute;
 	float Sagesse;
 	float Malice;
-	P_Cluster cluster;
+	// char maison[100];
 } Point;
-typedef Point *P_Point;
+typedef Point P_Point;
 
-//definition structure couleur
-typedef struct Color
+typedef struct Cluster
 {
-	int r;
-	int g;
-	int b;
-} Color;
+	int taille;
+	P_Point C_Cluster[];
+} Cluster;
+typedef Cluster P_Cluster;
 
-//prototypes des fonctions
-int minimun(int, int);
-int maximum(int, int);
-float getDistance(Point, Point);
-// void afficheCluster(Cluster);
-void initialisePoints(P_Point, int);
-// void initialiseClusters(P_Point, P_Cluster, int, int);
-// void initialiseDistance(float *distance[], P_Point, int);
-// void affecterPointsMedoideProche(P_Point, P_Cluster, float *distance[], int, int);
+float getDistance(Point a, Point b)
+{
+	float s = sqrt(pow(a.Courage - b.Courage, 2) + pow(a.Loyaute - b.Loyaute, 2) + pow(a.Sagesse - b.Sagesse, 2) +
+				   pow(a.Malice - b.Malice, 2));
+	return s;
+}
 
-//Definition des fonctions
-//retourne le min de 2 valeur
 int minimum(int i, int j)
 {
 	int m = (i < j) ? i : j;
@@ -57,113 +43,125 @@ int maximum(int i, int j)
 	return m;
 }
 
-//fonction qui retourne distance entre 2points
-//Ici chaque point est representé dans le plan par 4 coordonnées (4D)
-float getDistance(Point a, Point b)
+const char *getfield(char *str, int num, char buffer[40])
 {
-	float s = sqrt(pow(a.Courage - b.Courage, 2) + pow(a.Loyaute - b.Loyaute, 2) + pow(a.Sagesse - b.Sagesse, 2) +
-				   pow(a.Malice - b.Malice, 2));
-	return s;
-}
-//fonction pour l'intialisation de n points
-void initialisePoints(P_Point points, int n)
-{
-	int i;
 
-	char *file_path = "choixpeauMagique.csv";
-	FILE *fp = fopen(file_path, "r");
+	int init_size = strlen(str);
+	char delim[] = ";";
 
-	if (!fp)
-		printf("Can't open file\n");
-
-	else
+	char *ptr = strtok(str, delim);
+	int i = 1;
+	while (ptr != NULL)
 	{
-		//Ici on a pris un tableau de taille 1084
-		char buffer[1024];
 
-		int row = 0;
-		int column = 0;
-
-		while (fgets(buffer,
-					 1024, fp))
+		ptr = strtok(NULL, delim);
+		if (i == 5)
 		{
-			column = 0;
-			row++;
-
-			// Pour éviter l'affichage de la colonne
-			// les noms dans le fichier peuvent être modifiés si besoin
-			if (row == 1)
-				continue;
-
-			// Division des données
-			char *value = strtok(buffer, ";");
-
-			while (value)
-			{
-				// Column 1
-				if (column == 0)
-				{
-					printf("Name :");
-				}
-
-				// Column 2
-				if (column == 1)
-				{
-					printf("\tCourage :");
-					points[row - 1].Courage = atof(value);
-				}
-
-				// Column 3
-				if (column == 2)
-				{
-					printf("\tLoyaute :");
-					points[row - 1].Loyaute = atof(value);
-				}
-
-				// Column 4
-				if (column == 3)
-				{
-					printf("\tSagesse :");
-					points[row - 1].Sagesse = atof(value);
-				}
-
-				// Column 5
-				if (column == 4)
-				{
-					printf("\tMalice :");
-					points[row - 1].Malice = atof(value);
-				}
-
-				// Column 6
-				if (column == 5)
-				{
-					printf("\tVille :");
-				}
-
-				printf("%s", value);
-				value = strtok(NULL, ";");
-				column++;
-			}
-
-			printf("\n");
+			i++;
 		}
 
-		// Close the file
-		fclose(fp);
+		if (i == num)
+		{
+			strcpy(buffer, ptr);
+			break;
+		}
+		i++;
 	}
-
-	/*for(i=0;i<n;i++){
-        points[i].Courage=rand()%(40 + 1) + 1;
-        points[i].Loyaute=rand()%(30 + 1) + 1;
-        points[i].Sagesse=rand()%(30 + 1) + 1;
-        points[i].Malice =rand()%(30 + 1) + 1;
-
-    } */
 }
 
-int main(int argc, char **argv)
+int initialnumberobject(FILE *fp)
+{
+	int ch = 0;
+	int lines = 0;
+
+	while (!feof(fp))
+	{
+		ch = fgetc(fp);
+		if (ch == '\n')
+		{
+			lines++;
+		}
+	}
+	rewind(fp);
+	return lines - 1;
+}
+void parsenPoint(int initalnumber, P_Point init[], FILE *fp)
 {
 
-	int n = 50; //points
-	return 0;
+	int i = 0;
+	char line[150];
+
+	fgets(line, 150, fp);
+
+	while (fgets(line, 150, fp))
+	{
+		char *tmp = strdup(line);
+		char buffer[40];
+		getfield(tmp, 1, buffer);
+		printf("%s\n", buffer);
+		getfield(tmp, 2, buffer);
+		printf("%s\n", buffer);
+		getfield(tmp, 3, buffer);
+		printf("%s\n", buffer);
+		getfield(tmp, 4, buffer);
+		printf("%s\n", buffer);
+		getfield(tmp, 5, buffer);
+		printf("%s\n", buffer);
+		getfield(tmp, 6, buffer);
+		printf("%s\n", buffer);
+		printf("Next\n");
+
+		// init[i].Courage = atof(getfield(tmp, 2));
+		// init[i].Loyaute = atof(getfield(tmp, 3));
+		// init[i].Sagesse = atof(getfield(tmp, 4));
+		// init[i].Malice = atof(getfield(tmp, 5));
+		// strcpy(init[i].maison, getfield(tmp, 6));
+		free(tmp);
+		i++;
+	}
+}
+
+void numercluster(int K, int initialnumber, int tab[])
+{
+	for (int i = 0; i < K; i++)
+	{
+		tab[i] = rand() % initialnumber + 1;
+	}
+}
+
+void creecluster(int intab[], P_Cluster clustertab[], int initialnumber, P_Point init[], int K)
+{
+	for (int i = 0; i < K; i++)
+	{
+		clustertab[i].taille = 1;
+		P_Point C_Cluster[initialnumber];
+		C_Cluster[i] = init[intab[i]];
+		i++;
+	}
+}
+
+void addnearestpointtocluster(P_Cluster clustertab[])
+{
+}
+
+int main()
+{
+	FILE *fp = fopen("choixpeauMagique.csv", "r");
+	if (fp == NULL)
+	{
+		printf("Erreur de lecture");
+		exit(EXIT_FAILURE);
+	}
+
+	int initialnumber = initialnumberobject(fp);
+	P_Point init[initialnumber];
+	rewind(fp);
+	parsenPoint(initialnumber, init, fp);
+	int K = 4;
+	int intab[K];
+	numercluster(K, initialnumber, intab);
+	P_Cluster clustertab[K];
+	creecluster(intab, clustertab, initialnumber, init, K);
+	printf("%f", clustertab[0].C_Cluster[0].Courage);
+	fclose(fp);
 }

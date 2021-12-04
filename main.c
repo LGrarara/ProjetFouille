@@ -151,8 +151,8 @@ void creecluster(int intab[], P_Cluster clustertab[], int initialnumber, P_Point
 	for (int i = 0; i < K; i++)
 	{
 		clustertab[i].taille = 1;
-		P_Point C_Cluster[initialnumber];
-		C_Cluster[i] = init[intab[i]];
+		P_Point buffer = init[intab[i]];
+		clustertab[i].C_Cluster[0] = buffer;
 		i++;
 	}
 }
@@ -174,13 +174,12 @@ int main()
 	int K = 4;
 	int intab[K];
 	float distance[50][50];
+	// Tableau avecc toute les distance entre chaque point
 	initialiseDistance(distance, init, 50);
-	printf("%f", distance[1][7]);
 	// genere K valeur aleatoire;
 	numercluster(K, initialnumber, intab);
+	P_Cluster clustertab[K];
+	creecluster(intab, clustertab, initialnumber, init, K);
 
-	// P_Cluster clustertab[K];
-	// creecluster(intab, clustertab, initialnumber, init, K);
-	// printf("%f", clustertab[0].C_Cluster[0].Courage);
-	// fclose(fp);
+	printf("%f", clustertab[0].C_Cluster[0].Loyaute);
 }

@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,12 +6,12 @@
 
 typedef struct Point
 {
-	// char nom[100];
+	char nom[100];
 	float Courage;
 	float Loyaute;
 	float Sagesse;
 	float Malice;
-	// char maison[100];
+	char maison[100];
 } Point;
 typedef Point P_Point;
 
@@ -43,29 +42,51 @@ int maximum(int i, int j)
 	return m;
 }
 
-const char *getfield(char *str, int num, char buffer[40])
+void parsenPoint(int initalnumber, P_Point init[], FILE *fp)
 {
 
-	int init_size = strlen(str);
-	char delim[] = ";";
+	int i;
+	int j = 0;
+	char line[150];
 
-	char *ptr = strtok(str, delim);
-	int i = 1;
-	while (ptr != NULL)
+	fgets(line, 150, fp);
+
+	while (fgets(line, 150, fp))
 	{
+		char *str = strdup(line);
 
-		ptr = strtok(NULL, delim);
-		if (i == 5)
+		int init_size = strlen(str);
+
+		char *ptr = strtok(str, ";");
+		int i = 1;
+
+		while (ptr != NULL)
 		{
+			if (i == 1)
+				strcpy(init[j].nom, ptr);
+
+			if (i == 2)
+				init[j].Courage = atof(ptr);
+
+			if (i == 3)
+				init[j].Loyaute = atof(ptr);
+
+			if (i == 4)
+				init[j].Sagesse = atof(ptr);
+
+			if (i == 5)
+				init[j].Malice = atof(ptr);
+
+			if (i == 6)
+				init[j].Courage = atof(ptr);
+
+			if (i == 1)
+				strcpy(init[j].maison, ptr);
+
+			ptr = strtok(NULL, ";");
 			i++;
 		}
-
-		if (i == num)
-		{
-			strcpy(buffer, ptr);
-			break;
-		}
-		i++;
+		j++;
 	}
 }
 
@@ -85,41 +106,6 @@ int initialnumberobject(FILE *fp)
 	rewind(fp);
 	return lines - 1;
 }
-void parsenPoint(int initalnumber, P_Point init[], FILE *fp)
-{
-
-	int i = 0;
-	char line[150];
-
-	fgets(line, 150, fp);
-
-	while (fgets(line, 150, fp))
-	{
-		char *tmp = strdup(line);
-		char buffer[40];
-		getfield(tmp, 1, buffer);
-		printf("%s\n", buffer);
-		getfield(tmp, 2, buffer);
-		printf("%s\n", buffer);
-		getfield(tmp, 3, buffer);
-		printf("%s\n", buffer);
-		getfield(tmp, 4, buffer);
-		printf("%s\n", buffer);
-		getfield(tmp, 5, buffer);
-		printf("%s\n", buffer);
-		getfield(tmp, 6, buffer);
-		printf("%s\n", buffer);
-		printf("Next\n");
-
-		// init[i].Courage = atof(getfield(tmp, 2));
-		// init[i].Loyaute = atof(getfield(tmp, 3));
-		// init[i].Sagesse = atof(getfield(tmp, 4));
-		// init[i].Malice = atof(getfield(tmp, 5));
-		// strcpy(init[i].maison, getfield(tmp, 6));
-		free(tmp);
-		i++;
-	}
-}
 
 void numercluster(int K, int initialnumber, int tab[])
 {
@@ -129,19 +115,28 @@ void numercluster(int K, int initialnumber, int tab[])
 	}
 }
 
-void creecluster(int intab[], P_Cluster clustertab[], int initialnumber, P_Point init[], int K)
+void initialiseDistance(float distance[50][50], P_Point points[], int n)
+{
+	int i, j;
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < i + 1; j++)
+		{
+			distance[i][j] = getDistance(points[i], points[j]);
+		}
+	}
+}
+
+void creecluster(int intab[], P_Cluster clustertab[], int initialnumber, P_Point init[50], int K)
 {
 	for (int i = 0; i < K; i++)
 	{
 		clustertab[i].taille = 1;
-		P_Point C_Cluster[initialnumber];
-		C_Cluster[i] = init[intab[i]];
-		i++;
+		P_Point buffer = init[intab[i]];
+		printf("%f\n", init[intab[i]].Loyaute);
+		printf("Suivant\n");
+		clustertab[i].C_Cluster[0] = buffer;
 	}
-}
-
-void addnearestpointtocluster(P_Cluster clustertab[])
-{
 }
 
 int main()
@@ -156,12 +151,28 @@ int main()
 	int initialnumber = initialnumberobject(fp);
 	P_Point init[initialnumber];
 	rewind(fp);
+	// Prend le fichier en parametre et convertit en tableau de point
 	parsenPoint(initialnumber, init, fp);
 	int K = 4;
 	int intab[K];
+	float distance[50][50];
+	// Tableau avecc toute les distance entre chaque point
+	initialiseDistance(distance, init, 50);
+	// genere K valeur aleatoire;
 	numercluster(K, initialnumber, intab);
 	P_Cluster clustertab[K];
+
+	// for (int i = 0; i < 50; i++)
+	// {
+	// 	printf("numero: %d\n", i);
+	// 	printf("%f\n", init[i].Loyaute);
+	// }
+
+	for (int i = 0; i < K; i++)
+	{
+		printf("numero: %d\n", i);
+		printf("%d\n", intab[i]);
+	}
+
 	creecluster(intab, clustertab, initialnumber, init, K);
-	printf("%f", clustertab[0].C_Cluster[0].Courage);
-	fclose(fp);
 }

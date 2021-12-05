@@ -18,6 +18,7 @@ typedef Point P_Point;
 typedef struct Cluster
 {
 	int taille;
+	int centre;
 	P_Point C_Cluster[];
 } Cluster;
 typedef Cluster P_Cluster;
@@ -106,12 +107,21 @@ int initialnumberobject(FILE *fp)
 	rewind(fp);
 	return lines - 1;
 }
-
-void numercluster(int K, int initialnumber, int tab[])
+void numercluster(int K, int initialnumber, P_Cluster clustertab[K], P_Point init[])
 {
-	for (int i = 0; i < K; i++)
+	int i;
+	for (i = 0; i < K; i++)
+		clustertab[i].taille = 0;
+
+	for (i = 0; i < K; i++)
 	{
-		tab[i] = rand() % initialnumber + 1;
+		clustertab[i].centre = rand() % initialnumber + 1;
+
+		printf("%d\n", clustertab[i].centre);
+		P_Point buffer = init[clustertab[i].centre];
+
+		printf("%f\n", buffer.Loyaute);
+		clustertab[i].C_Cluster[0] = buffer;
 	}
 }
 
@@ -129,14 +139,6 @@ void initialiseDistance(float distance[50][50], P_Point points[], int n)
 
 void creecluster(int intab[], P_Cluster clustertab[], int initialnumber, P_Point init[50], int K)
 {
-	for (int i = 0; i < K; i++)
-	{
-		clustertab[i].taille = 1;
-		P_Point buffer = init[intab[i]];
-		printf("%f\n", init[intab[i]].Loyaute);
-		printf("Suivant\n");
-		clustertab[i].C_Cluster[0] = buffer;
-	}
 }
 
 int main()
@@ -158,21 +160,13 @@ int main()
 	float distance[50][50];
 	// Tableau avecc toute les distance entre chaque point
 	initialiseDistance(distance, init, 50);
-	// genere K valeur aleatoire;
-	numercluster(K, initialnumber, intab);
 	P_Cluster clustertab[K];
 
-	// for (int i = 0; i < 50; i++)
-	// {
-	// 	printf("numero: %d\n", i);
-	// 	printf("%f\n", init[i].Loyaute);
-	// }
+	// genere K valeur aleatoire;
+	numercluster(K, initialnumber, clustertab, init);
 
-	for (int i = 0; i < K; i++)
-	{
-		printf("numero: %d\n", i);
-		printf("%d\n", intab[i]);
-	}
+	// printf("%f", clustertab[0].C_Cluster[0].Malice);
+	// 	for (int i = 0; i < K; i++)
 
-	creecluster(intab, clustertab, initialnumber, init, K);
+	// 		creecluster(intab, clustertab, initialnumber, init, K);
 }

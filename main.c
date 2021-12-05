@@ -237,6 +237,7 @@ Cluster selectBestClusterMedoids(P_Point points, float *distance[], Cluster clus
 			j++;
 		}
 	}
+	// Calcul la distance total entre le metoid et le cluster
 	for (i = 0; i < n; i++)
 		totalDist += distance[max(i, medoid)][min(i, medoid)];
 
@@ -245,6 +246,7 @@ Cluster selectBestClusterMedoids(P_Point points, float *distance[], Cluster clus
 		tmpTotalDist = 0;
 		int tmpMedoid = medoidPoints[i];
 
+		// Calcul la distance entre un point et le cluser
 		for (j = 0; j < n; j++)
 			tmpTotalDist += distance[max(j, tmpMedoid)][min(j, tmpMedoid)];
 

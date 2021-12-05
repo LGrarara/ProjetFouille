@@ -146,14 +146,15 @@ void initialiseDistance(float distance[50][50], P_Point points[], int n)
 	}
 }
 
-void creecluster(int intab[], P_Cluster clustertab[], int initialnumber, P_Point init[], int K)
+void creecluster(int intab[], P_Cluster clustertab[], int initialnumber, P_Point init[50], int K)
 {
 	for (int i = 0; i < K; i++)
 	{
 		clustertab[i].taille = 1;
 		P_Point buffer = init[intab[i]];
+		printf("%f\n", init[intab[i]].Loyaute);
+		printf("Suivant\n");
 		clustertab[i].C_Cluster[0] = buffer;
-		i++;
 	}
 }
 
@@ -179,7 +180,18 @@ int main()
 	// genere K valeur aleatoire;
 	numercluster(K, initialnumber, intab);
 	P_Cluster clustertab[K];
-	creecluster(intab, clustertab, initialnumber, init, K);
 
-	printf("%f", clustertab[0].C_Cluster[0].Loyaute);
+	// for (int i = 0; i < 50; i++)
+	// {
+	// 	printf("numero: %d\n", i);
+	// 	printf("%f\n", init[i].Loyaute);
+	// }
+
+	for (int i = 0; i < K; i++)
+	{
+		printf("numero: %d\n", i);
+		printf("%d\n", intab[i]);
+	}
+
+	creecluster(intab, clustertab, initialnumber, init, K);
 }

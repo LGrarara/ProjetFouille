@@ -3,6 +3,7 @@
 #include <string.h>
 #include <errno.h>
 #include <math.h>
+#include <time.h>
 
 typedef struct Point
 {
@@ -107,8 +108,9 @@ int initialnumberobject(FILE *fp)
 	rewind(fp);
 	return lines - 1;
 }
-void numercluster(int K, int initialnumber, P_Cluster clustertab[K], P_Point init[])
+void numercluster(int K, int initialnumber, P_Cluster clustertab[K], P_Point init[50])
 {
+	srand(time(0));
 	int i;
 	for (i = 0; i < K; i++)
 		clustertab[i].taille = 0;
@@ -120,9 +122,11 @@ void numercluster(int K, int initialnumber, P_Cluster clustertab[K], P_Point ini
 		printf("%d\n", clustertab[i].centre);
 		P_Point buffer = init[clustertab[i].centre];
 
-		printf("%f\n", buffer.Loyaute);
 		clustertab[i].C_Cluster[0] = buffer;
+		// printf("%f,%d\n", clustertab[i].C_Cluster[0].Loyaute, i);
 	}
+
+	// printf("%f\n", clustertab[0].C_Cluster[0].Loyaute);
 }
 
 void initialiseDistance(float distance[50][50], P_Point points[], int n)

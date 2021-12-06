@@ -172,17 +172,9 @@ void affecter_cluster_le_plus_proche(int k, int n, P_Cluster clusters[], P_Point
 				if (tmp < minimumtab[j])
 					minimumtab[j] = tmp;
 			}
-			if (minimumtab[j] == 0)
-			{
-				points[e].cluster = j;
-				clusters[j].taille++;
-				break;
-			}
-			else
-			{
-				points[e].cluster = find_minimum(minimumtab, k);
-				clusters[find_minimum(minimumtab, k)].taille++;
-			}
+
+			points[e].cluster = find_minimum(minimumtab, k);
+			clusters[find_minimum(minimumtab, k)].taille++;
 		}
 	}
 }

@@ -232,6 +232,14 @@ void afficher_cluser_bis(P_Point points[], int n)
         }
     }
 }
+
+void afficher_pam(int k, P_Cluster clusters[], P_Point points[])
+{
+    for (int i = 0; i < k; i++)
+    {
+    }
+}
+
 int main()
 {
     int n = 50; //points
@@ -246,8 +254,7 @@ int main()
     initialiseDistance(distance, points, n);
     initialisecluster(k, n, clusters, points);
     affecter_cluster_le_plus_proche(k, n, clusters, points);
-    afficheCluster(clusters, k);
     trouver_le_meilleur_centre(k, n, clusters, points);
-
     afficheCluster(clusters, k);
+    afficher_pam(k, clusters, points);
 }

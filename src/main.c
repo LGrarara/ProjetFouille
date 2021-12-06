@@ -41,8 +41,6 @@ float getDistance(Point a, Point b)
 // Initialise les point a partir du fichier csv
 void initialisePoints(P_Point points[])
 {
-    int i;
-
     char *file_path = "choixpeauMagique.csv";
     FILE *fp = fopen(file_path, "r");
 
@@ -230,58 +228,144 @@ void trouver_le_meilleur_centre(int k, int n, P_Cluster clusters[], P_Point poin
 }
 
 
-void afficher_pam(int n, P_Point points[], P_Cluster clusters[], int k )
+void afficher_pam(int n, P_Point points[], P_Cluster clusters[], int k)
 {
-	//On espace chaque point de 20 pixel
+	//Espace chaque point de 20 pixel
 	int ecart = 20;
+	int ecarspe = 20;
+	//Abscisse = n et Ordonnée la total des points de Courage Loyauté Sagesse et Malice
+	init_graphics(1000,500);
+	int r = 250;
+	int g = 0;
+	int b = 0;
+	// i = 0 si le premier cluster à le numéro 0
+	for (int i = 0; i < k; i++)
+		{
+		//On cherche la position x du metoid
+		int position = 0;
+		int nombredepoints = 0;
+		for (int j = 0; j < n; j++)
+			{
+				if (points[j].cluster == i)
+				{		
+					position += j+ecarspe;
+					nombredepoints += 1;
+					ecarspe += 10;
+				}
+			}
+		//p2 est le point centré du cluster
+		POINT p2;
+		p2.y = (points[clusters[i].centre].Courage + points[clusters[i].centre].Loyaute + points[clusters[i].centre].Sagesse + points[clusters[i].centre].Malice)*10;
+		p2.x = position/nombredepoints;
+		for (int j = 0; j < n; j++)
+		{			
+				if (points[j].cluster == i)
+				{
+					POINT p1;
+					p1.x = j+ecart;
+					ecart += 10;
+					p1.y = (points[j].Courage + points[j].Loyaute + points[j].Sagesse + points[j].Malice)*10;
+				    //Trace le point(c'est un cercle pcq on voit rien avec un pixel)
+					draw_fill_circle(p1,n/15,couleur_RGB(r,g,b));	
+					//Trace un ligne entre le point créé et le centre du cluster
+					draw_line(p1,p2,couleur_RGB(r,g,b));
+				}	
+			}
+				//On différencie les clusters par couleur
+				if(i%3==0){
+					r = 0;
+					g = 250;	
+					b = 0;}
+					
+				if(i%3==1){
+					r = 0;
+					g = 0;
+					b = 250;}
+					
+				if(i%3==2){
+					r=250;
+					g = 0;
+					b = 0;}
+			}
+	wait_escape();
+	
+	
+/*////A SUPPR SI PAS DE RETOUCHE AU CENTRE 
+	
+	int ecart = 20;
+	//copie de ecart
+	int ecarspe = 20;
 	//Absicce = n et Ordonnée la total des points de Courage Loyauté Sagesse et Malice
 	init_graphics(1000,500);
 	
 	int r = 250;
 	int g = 0;
 	int b = 0;
+	
+	int ptmedoi = 0;
+	
 	// i = 0 si le premier cluster à le numéro 0
 	for (int i = 0; i < k; i++)
-	{
-		printf("Tourne k+1 \n");
-		//POINT p2;
-		//p2.x = (clusters[i].centre.Courage + clusters[i].centre.Loyaute + clusters[i].centre.Sagesse + clusters[i].centre.Malice)*10;
-		//p2.y = clusters[i].centre+ecartement;
-		
-		for (int j = 0; j < n; j++)
 		{
-			//for (int i = 1; i <= k; i++)
-			//{
+
+		for (int j = 0; j < n; j++)
+			{
 				if (points[j].cluster == i)
 				{
+					f ( 
+					(points[j].Courage == points[clusters[i].centre].Courage)&&
+					(points[j].Loyaute == points[clusters[i].centre].Loyaute)&&
+					(points[j].Sagesse == points[clusters[i].centre].Sagesse)&&
+					(points[j].Malice == points[clusters[i].centre].Malice) )
+					{
+					printf("%d\n",j);		
+					ptmedoi = j+ecarspe;
+					}
+					ecarspe+=10;
 					
-			//Si le point appartient au cluster i
-			//if (points[j].cluster == i)
-			//{
-				    POINT p1;
+				}
+			}
+			
+		POINT p2;
+		p2.y = (points[clusters[i].centre].Courage + points[clusters[i].centre].Loyaute + points[clusters[i].centre].Sagesse + points[clusters[i].centre].Malice)*10;
+		p2.x = ptmedoi;
+		for (int j = 0; j < n; j++)
+		{	
+				if (points[j].cluster == i)
+				{
+					POINT p1;
 					p1.x = j+ecart;
 					ecart += 10;
 					p1.y = (points[j].Courage + points[j].Loyaute + points[j].Sagesse + points[j].Malice)*10;
-					
-					//On fait un cercle pcq on voit rien avec un pixel
-					draw_fill_circle(p1,n/15,couleur_RGB(r,g,b));
+				    //On fait un cercle pcq on voit rien avec un pixel
+					draw_fill_circle(p1,n/15,couleur_RGB(r,g,b));	
 					//Trace un ligne entre le point créé et le centre du cluster
-					//draw_line(p1,p2,red);
-				}
+					draw_line(p1,p2,couleur_RGB(r,g,b));
+				}	
 			}
-				//Après le premier cluster
-				if(i==0){
-					printf("Vert\n");
-					g = 250;}
+
+				//On différencie les clusters par couleur
+				if(i%3==0){
+					r = 0;
+					g = 250;	
+					b = 0;}
 					
-				//Après le deuxième cluster	
-				if(i==1){
-					printf("Bleu\n");
+				if(i%3==1){
+					r = 0;
+					g = 0;
 					b = 250;}
+					
+				if(i%3==2){
+					r=250;
+					g = 0;
+					b = 0;}
 			}
 		
 	wait_escape();
+	*/
+
 }
+
 
 
 int main()

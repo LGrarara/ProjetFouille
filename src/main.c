@@ -36,7 +36,7 @@ float getDistance(Point a, Point b)
 }
 
 // Initialise les point a partir du fichier csv
-void initialisePoints(P_Point points[], int n)
+void initialisePoints(P_Point points[])
 {
     int i;
 
@@ -169,8 +169,14 @@ void affecter_cluster_le_plus_proche(int k, int n, P_Cluster clusters[], P_Point
                 mincluster = j;
             }
         }
+
         points[e].cluster = mincluster;
         clusters[mincluster].taille++;
+    }
+
+    for (i = 0; i < k; i++)
+    {
+        clusters[i].taille--;
     }
 }
 
@@ -220,19 +226,6 @@ void trouver_le_meilleur_centre(int k, int n, P_Cluster clusters[], P_Point poin
     }
 }
 
-void afficher_cluser_bis(P_Point points[], int n)
-{
-
-    for (int i = 0; i < n; i++)
-    {
-
-        if (points[i].cluster == 0)
-        {
-            printf("%f\n", points[i].Loyaute);
-        }
-    }
-}
-
 void afficher_pam(int k, P_Cluster clusters[], P_Point points[])
 {
     for (int i = 0; i < k; i++)
@@ -250,7 +243,7 @@ int main()
     float distance[n][n];
     P_Point points[n];
     P_Cluster clusters[k];
-    initialisePoints(points, n);
+    initialisePoints(points);
     initialiseDistance(distance, points, n);
     initialisecluster(k, n, clusters, points);
     affecter_cluster_le_plus_proche(k, n, clusters, points);

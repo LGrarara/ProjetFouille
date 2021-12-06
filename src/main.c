@@ -166,19 +166,31 @@ void affecter_cluster_le_plus_proche(int k, int n, P_Cluster clusters[], P_Point
 
 		for (j = 0; j < k; j++)
 		{
-			for (i = 0; i < n; i++)
-			{
-				tmp = getDistance(points[i], points[clusters[j].centre]);
-				if (tmp < minimumtab[j])
-					minimumtab[j] = tmp;
-			}
-
-			points[e].cluster = find_minimum(minimumtab, k);
-			clusters[find_minimum(minimumtab, k)].taille++;
+			tmp = getDistance(points[e], points[clusters[j].centre]);
+			if (tmp < minimumtab[j])
+				minimumtab[j] = tmp;
 		}
+		points[e].cluster = find_minimum(minimumtab, k);
+		clusters[find_minimum(minimumtab, k)].taille++;
 	}
 }
 
+void trouver_le_meilleur_centre(int k, int n, P_Cluster clusters[], P_Point points[])
+{
+}
+
+void afficher_cluser_bis(P_Point points[], int n)
+{
+
+	for (int i = 0; i < n; i++)
+	{
+
+		if (points[i].cluster == 0)
+		{
+			printf("%f\n", points[i].Loyaute);
+		}
+	}
+}
 int main()
 {
 	int n = 50; //points
@@ -193,4 +205,5 @@ int main()
 	initialiseDistance(distance, points, n);
 	initialisecluster(k, n, clusters, points);
 	affecter_cluster_le_plus_proche(k, n, clusters, points);
+	trouver_le_meilleur_centre(k, n, clusters, points);
 }

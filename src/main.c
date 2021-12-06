@@ -5,6 +5,9 @@
 #include <math.h>
 #include <time.h>
 
+//TEST A FAIRE : Ajouter la biblio dans le fichier, il faut l'ajouter dans un dossier include, .... jusqu'à ce que ca marche
+#include "uvsqgraphics.h"
+
 typedef struct Point
 {
     float Courage;
@@ -152,7 +155,7 @@ void afficheCluster(P_Cluster clusters[], int k)
 // Ajoute les points les plus proches a chaque clusters
 void affecter_cluster_le_plus_proche(int k, int n, P_Cluster clusters[], P_Point points[])
 {
-    // Pour chaque centre comparer a un pont n, garder valeur minimum
+    // Pour chaque centre comparer a un point n, garder valeur minimum
     //objet i de 0 à n, chercher le cluster le plus proche de de n, i++
     int i, j, e;
     float tmp;
@@ -232,6 +235,61 @@ void afficher_cluser_bis(P_Point points[], int n)
         }
     }
 }
+
+void afficher_pam(int n, P_Point points[], P_Cluster clusters[], int k )
+{
+	//On espace chaque point de 20 pixel
+	int ecart = 20;
+	//Absicce = n et Ordonnée la total des points de Courage Loyauté Sagesse et Malice
+	init_graphics(1000,500);
+	
+	int r = 250;
+	int g = 0;
+	int b = 0;
+	// i = 0 si le premier cluster à le numéro 0
+	for (int i = 0; i < k; i++)
+	{
+		printf("Tourne k+1 \n");
+		//POINT p2;
+		//p2.x = (clusters[i].centre.Courage + clusters[i].centre.Loyaute + clusters[i].centre.Sagesse + clusters[i].centre.Malice)*10;
+		//p2.y = clusters[i].centre+ecartement;
+		
+		for (int j = 0; j < n; j++)
+		{
+			//for (int i = 1; i <= k; i++)
+			//{
+				if (points[j].cluster == i)
+				{
+					
+			//Si le point appartient au cluster i
+			//if (points[j].cluster == i)
+			//{
+				    POINT p1;
+					p1.x = j+ecart;
+					ecart += 10;
+					p1.y = (points[j].Courage + points[j].Loyaute + points[j].Sagesse + points[j].Malice)*10;
+					
+					//On fait un cercle pcq on voit rien avec un pixel
+					draw_fill_circle(p1,n/15,couleur_RGB(r,g,b));
+					//Trace un ligne entre le point créé et le centre du cluster
+					//draw_line(p1,p2,red);
+				}
+			}
+				//Après le premier cluster
+				if(i==0){
+					printf("Vert\n");
+					g = 250;}
+					
+				//Après le deuxième cluster	
+				if(i==1){
+					printf("Bleu\n");
+					b = 250;}
+			}
+		
+	wait_escape();
+}
+
+
 int main()
 {
     int n = 50; //points
@@ -246,8 +304,10 @@ int main()
     initialiseDistance(distance, points, n);
     initialisecluster(k, n, clusters, points);
     affecter_cluster_le_plus_proche(k, n, clusters, points);
-    afficheCluster(clusters, k);
+    //afficheCluster(clusters, k);
     trouver_le_meilleur_centre(k, n, clusters, points);
 
-    afficheCluster(clusters, k);
+    //afficheCluster(clusters, k);
+    
+    afficher_pam(n, points, clusters, k);
 }

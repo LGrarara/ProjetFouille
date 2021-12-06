@@ -160,26 +160,25 @@ int find_minimum(float a[], int k)
 // Ajoute les points les plus proches a chaque clusters
 void affecter_cluster_le_plus_proche(int k, int n, P_Cluster clusters[], P_Point points[])
 {
+    // Pour chaque centre comparer a un pont n, garder valeur minimum
     //objet i de 0 à n, chercher le cluster le plus proche de de n, i++
     int i, j, e;
     float tmp;
-    float minimum = 900000000;
-
-    float minimumtab[k];
-
+    int mincluster;
     for (e = 0; e < n; e++)
     {
-        for (i = 0; i < k; i++)
-            minimumtab[i] = minimum;
-
+        float minimum = 900000000;
         for (j = 0; j < k; j++)
         {
-            tmp = getDistance(points[e], points[clusters[j].centre]);
-            if (tmp < minimumtab[j])
-                minimumtab[j] = tmp;
+            tmp = getDistance(points[clusters[j].centre], points[e]);
+            if (tmp < minimum)
+            {
+                minimum = tmp;
+                mincluster = j;
+            }
         }
-        points[e].cluster = find_minimum(minimumtab, k);
-        clusters[find_minimum(minimumtab, k)].taille++;
+        points[e].cluster = mincluster;
+        clusters[mincluster].taille++;
     }
 }
 
@@ -238,7 +237,7 @@ void afficher_cluser_bis(P_Point points[], int n)
 int main()
 {
     int n = 50; //points
-    int k = 6;  //groupes
+    int k = 3;  //groupes
     if (k > n)
         exit(0);
 
@@ -249,9 +248,6 @@ int main()
     initialiseDistance(distance, points, n);
     initialisecluster(k, n, clusters, points);
     affecter_cluster_le_plus_proche(k, n, clusters, points);
-
     afficheCluster(clusters, k);
-    trouver_le_meilleur_centre(k, n, clusters, points);
-
-    afficheCluster(clusters, k);
+    // trouver_le_meilleur_centre(k, n, clusters, points);
 }

@@ -135,10 +135,12 @@ void afficheCluster(P_Cluster clusters[], int k)
 {
     for (int i = 0; i < k; i++)
     {
-        printf("centre: %d\n", clusters[i].centre);
-        printf("Taille: %d\n", clusters[i].taille);
+        printf("centre: %d   ", clusters[i].centre);
+        printf("Taille: %d   ", clusters[i].taille);
         printf("suivant\n");
     }
+
+    printf("cluster suivant\n\n");
 }
 
 // Retourne l'index de la valeur minimum du tableau passer en parametre
@@ -181,14 +183,43 @@ void affecter_cluster_le_plus_proche(int k, int n, P_Cluster clusters[], P_Point
     }
 }
 
+int bestdistancetotal(P_Point points[], int numero_cluster, P_Cluster clusters[], int n)
+{
+    P_Point clusterstemp[clusters[numero_cluster].taille];
+    float distancetotal;
+    int intbestdistancetotal = 9000000;
+    float floatbestdistance = 9000000;
+    int i;
+    for (i = 0; i < n; i++)
+    {
+        if (points[i].cluster == numero_cluster)
+        {
+            P_Point buff = points[i];
+            clusterstemp[i] = points[i];
+        }
+    }
+
+    for (int e = 0; e < clusters[numero_cluster].taille; e++)
+    {
+        for (i = 0; i < clusters[numero_cluster].taille; i++)
+            distancetotal += getDistance(points[e], clusterstemp[i]);
+
+        if (distancetotal < floatbestdistance)
+        {
+            floatbestdistance = distancetotal;
+            intbestdistancetotal = e;
+        }
+    }
+    return intbestdistancetotal;
+}
 // Trouve le meilleur centre pour chaque cluster en calculant la distance max
 void trouver_le_meilleur_centre(int k, int n, P_Cluster clusters[], P_Point points[])
 {
 
-    // Calculer meilleur distance totale
+    // Calculer meilleur distance pour chaque cluster
     for (int i = 0; i < k; i++)
-
     {
+        clusters[i].centre = bestdistancetotal(points, i, clusters, n);
     }
 }
 
@@ -218,5 +249,9 @@ int main()
     initialiseDistance(distance, points, n);
     initialisecluster(k, n, clusters, points);
     affecter_cluster_le_plus_proche(k, n, clusters, points);
+
+    afficheCluster(clusters, k);
     trouver_le_meilleur_centre(k, n, clusters, points);
+
+    afficheCluster(clusters, k);
 }

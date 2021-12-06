@@ -22,6 +22,12 @@ typedef struct Cluster
 } Cluster;
 typedef Cluster P_Cluster;
 
+typedef struct Clustertemp
+{
+    P_Point point;
+    int numero;
+} Clustertemp;
+
 float getDistance(Point a, Point b)
 {
     float s = sqrt(pow(a.Courage - b.Courage, 2) + pow(a.Loyaute - b.Loyaute, 2) + pow(a.Sagesse - b.Sagesse, 2) +
@@ -143,20 +149,6 @@ void afficheCluster(P_Cluster clusters[], int k)
     printf("cluster suivant\n\n");
 }
 
-// Retourne l'index de la valeur minimum du tableau passer en parametre
-int find_minimum(float a[], int k)
-{
-    int c, index = 0;
-
-    float min;
-
-    for (c = 1; c < k; c++)
-        if (a[c] < min)
-            index = c;
-
-    return index;
-}
-
 // Ajoute les points les plus proches a chaque clusters
 void affecter_cluster_le_plus_proche(int k, int n, P_Cluster clusters[], P_Point points[])
 {
@@ -184,24 +176,30 @@ void affecter_cluster_le_plus_proche(int k, int n, P_Cluster clusters[], P_Point
 
 int bestdistancetotal(P_Point points[], int numero_cluster, P_Cluster clusters[], int n)
 {
-    P_Point clusterstemp[clusters[numero_cluster].taille];
+    // Cree un tableau qui represente le cluster en y ajoutant tout les points qui corresponde au cluster
+    Clustertemp clusterstemp[clusters[numero_cluster].taille];
     float distancetotal;
     int intbestdistancetotal = 9000000;
     float floatbestdistance = 9000000;
     int i;
+    int f = 0;
     for (i = 0; i < n; i++)
     {
         if (points[i].cluster == numero_cluster)
         {
             P_Point buff = points[i];
-            clusterstemp[i] = points[i];
+            clusterstemp[f].point = buff;
+            clusterstemp[f].numero = i;
+            f++;
         }
     }
 
-    for (int e = 0; e < clusters[numero_cluster].taille; e++)
+    // Calculer la distance mis pour parcouris a partit d'un point
+
+    for (int e = 0; e < f; e++)
     {
-        for (i = 0; i < clusters[numero_cluster].taille; i++)
-            distancetotal += getDistance(points[e], clusterstemp[i]);
+        for (i = 0; i < f; i++)
+            distancetotal += getDistance(points[e], clusterstemp[i].point);
 
         if (distancetotal < floatbestdistance)
         {
@@ -209,7 +207,7 @@ int bestdistancetotal(P_Point points[], int numero_cluster, P_Cluster clusters[]
             intbestdistancetotal = e;
         }
     }
-    return intbestdistancetotal;
+    return clusterstemp[intbestdistancetotal].numero;
 }
 // Trouve le meilleur centre pour chaque cluster en calculant la distance max
 void trouver_le_meilleur_centre(int k, int n, P_Cluster clusters[], P_Point points[])
@@ -249,5 +247,7 @@ int main()
     initialisecluster(k, n, clusters, points);
     affecter_cluster_le_plus_proche(k, n, clusters, points);
     afficheCluster(clusters, k);
-    // trouver_le_meilleur_centre(k, n, clusters, points);
+    trouver_le_meilleur_centre(k, n, clusters, points);
+
+    afficheCluster(clusters, k);
 }
